@@ -1,14 +1,51 @@
 # SimpleMathAnalyzer
 Lexical analysis, syntax analysis, and simple equality judgment of simple mathematical expressions
-您好，我明白了。我将以您的身份**SimpleMathAnalyzer**来总结所需完成的任务，并提供一个具体框架。我的核心任务是为**简单数学表达式**进行**词法分析**、**语法分析**和**简单等性判断**。
+## How to Contibute
+### clone
+```bash
+git clone git@github.com:starrywiki/SimpleMathAnalyzer.git
+cd SimpleMathAnalyzer
+```
+### Verify Connection: (Optional, but recommended)
+```bash
+ssh -T git@github.com
+# Expected output: Hi [Your Username]! You've successfully authenticated...
+# 我用的ssh协议，可自由选择
+```
+### workflow 
+Do NOT work directly on the main branch. This branch is reserved for stable, tested code.
+1. Update main: Before starting any new work, make sure your local main branch is up-to-date:
+```bash
+git checkout main
+git pull origin main
+```
+2. Create a Feature Branch: Create a new branch for your specific task (e.g., implementing the Lexer's number scanning or the Parser's power rule).
+```bash
+git checkout -b feature/your-task-name
+# Example: git checkout -b feature/lexer-implicit-multiplication
+```
+3. Develop and Commit: Write your code in the feature branch.
+```bash
+git add .
+git commit -m "feat: Describe your change clearly and concisely"
+# Example: git commit -m "feat: Implemented logic to insert STAR token for implicit multiplication"
+```
+4. Push the Branch
+```bash
+git push -u origin feature/your-task-name
+```
 
-以下是根据您提供的项目要求和我的功能定位所总结的**具体任务框架**：
+5. Create a Pull Request (PR):
+
+- Go to GitHub.
+- Create a Pull Request from your feature branch back into the main branch.
+- Wait for review before merging.
 
 ## 📝 任务要求概要
 
-* [cite_start]**项目构成**: 包含一个**编程任务**（编译器组件实现）和一个**理论任务**（程序语言理论证明）[cite: 3]。
+* **项目构成**: 包含一个**编程任务**（编译器组件实现）和一个**理论任务**（程序语言理论证明）。
 * **我所承担的编程任务**: **简单数学表达式的词法分析、语法分析和简单等性判断**。
-* [cite_start]**评分权重**: 编程任务占总评分的 10 分，理论任务占总评分的 25 分 [cite: 3]。
+* **评分权重**: 编程任务占总评分的 10 分，理论任务占总评分的 25 分 。
 * **实现目标**:
     * 定义包含整数常数、变量（单个字母）、四则运算（加、减、乘、除，乘号可能省略）、幂运算、开根号、自然对数、三角函数以及括号的数学表达式**语法树**。
     * 实现这类表达式的**词法分析**和**语法分析**。
@@ -62,14 +99,14 @@ Lexical analysis, syntax analysis, and simple equality judgment of simple mathem
 
 请注意以下截止日期，所有材料需发送至 `caoqinxiang@sjtu.edu.cn`[cite: 19]:
 
-| 事项 | 截止日期 |
-| :--- | :--- |
-| **编程任务**选题确认 | [cite_start]11月18日（周二）12:00:00 - 11月23日（周日）23:59:59 [cite: 22] |
-| 编程任务进展情况提交 | [cite_start]11月30日（周日）23:59:59 [cite: 23] |
-| **编程任务最终版本**提交 | [cite_start]12月14日（周日）23:59:59 [cite: 25] |
-| **理论任务**选题确认 | [cite_start]12月7日（周日）12:00 - 12月14日（周日）23:59:59 [cite: 24] |
-| 理论任务进展情况 (第一次) | [cite_start]12月21日（周日）23:59:59 [cite: 26] |
-| 理论任务进展情况 (第二次) | [cite_start]12月28日（周日）23:59:59 [cite: 27] |
-| 理论任务最终版本提交 | [cite_start]2026年1月18日（周日）23:59:59 [cite: 28] |
+| 事项                      | 截止日期                                                                   |
+| :------------------------ | :------------------------------------------------------------------------- |
+| **编程任务**选题确认      | [cite_start]11月18日（周二）12:00:00 - 11月23日（周日）23:59:59 [cite: 22] |
+| 编程任务进展情况提交      | [cite_start]11月30日（周日）23:59:59 [cite: 23]                            |
+| **编程任务最终版本**提交  | [cite_start]12月14日（周日）23:59:59 [cite: 25]                            |
+| **理论任务**选题确认      | [cite_start]12月7日（周日）12:00 - 12月14日（周日）23:59:59 [cite: 24]     |
+| 理论任务进展情况 (第一次) | [cite_start]12月21日（周日）23:59:59 [cite: 26]                            |
+| 理论任务进展情况 (第二次) | [cite_start]12月28日（周日）23:59:59 [cite: 27]                            |
+| 理论任务最终版本提交      | [cite_start]2026年1月18日（周日）23:59:59 [cite: 28]                       |
 
 ---
