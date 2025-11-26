@@ -13,110 +13,197 @@
 #include <stdexcept>
 #include <algorithm> // for std::find if needed
 
-// 构造函数：初始化字符串和指针
-Lexer::Lexer(const std::string& text) : text(text), pos(0) {
+Lexer::Lexer(const std::string &text) : text(text), pos(0)
+{
     current_char = text.empty() ? '\0' : text[0];
+    length = text.length();
 }
 
-// 指针前移：读取下一个字符
-void Lexer::advance() {
+// pos+1 & read next char
+void Lexer::advance()
+{
     pos++;
-    if (pos < text.length()) {
+    if (pos < text.length())
+    {
         current_char = text[pos];
-    } else {
-        current_char = '\0'; // 字符串结束符
+    }
+    else
+    {
+        current_char = '\0';
     }
 }
 
-// 跳过空白字符
-void Lexer::skip_whitespace() {
-    while (current_char != '\0' && std::isspace(current_char)) {
+void Lexer::skip_whitespace()
+{
+    while (current_char != '\0' && std::isspace(current_char))
+    {
         advance();
     }
 }
 
-// 扫描数字 (例如 "123")
-Token Lexer::number() {
+Token Lexer::number()
+{
     std::string result;
-    // 只要当前字符是数字，就一直读取
-    while (current_char != '\0' && std::isdigit(current_char)) {
+    while (current_char != '\0' && std::isdigit(current_char))
+    {
         result += current_char;
         advance();
     }
     return {TokenType::INT, result};
 }
 
-// 扫描标识符 (变量 "x" 或 函数 "sin")
-Token Lexer::identifier() {
-    std::string result;
-    // 只要是字母，就一直读取
-    while (current_char != '\0' && std::isalpha(current_char)) {
-        result += current_char;
-        advance();
+// 优先检查是否是函数关键字，如果是则消耗整个关键字；否则只消耗一个字符作为变量
+void Lexer::identifier(std::vector<Token> &tokens)
+{
+    // define keywords
+    static const std::vector<std::pair<std::string, TokenType>> keywords = {
+        {"sin", TokenType::SIN},
+        {"cos", TokenType::COS},
+        {"tan", TokenType::TAN},
+        {"cot", TokenType::COT},
+        {"ln", TokenType::LN},
+        {"sqrt", TokenType::SQRT}};
+
+    // check whether match keywords
+    for (const auto &kw : keywords)
+    {
+        const std::string &name = kw.first;
+        size_t len = name.length();
+
+        // 边界检查：剩余长度是否足够
+        if (pos + len <= length)
+        {
+            bool match = true;
+            for (size_t i = 0; i < len; ++i)
+            {
+                if (text[pos + i] != name[i])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match)
+            {
+                tokens.push_back(Token(kw.second, name));
+
+                for (size_t i = 0; i < len; ++i)
+                {
+                    advance();
+                }
+                return;
+            }
+        }
     }
 
-    // 判断是函数名还是普通变量
-    if (result == "sin") return {TokenType::SIN, "sin"};
-    if (result == "cos") return {TokenType::COS, "cos"};
-    if (result == "tan") return {TokenType::TAN, "tan"};
-    if (result == "cot") return {TokenType::COT, "cot"};
-    if (result == "ln")  return {TokenType::LN, "ln"};
-    if (result == "sqrt") return {TokenType::SQRT, "sqrt"};
-
-    // 如果不是函数名，就是变量
-    return {TokenType::VAR, result};
+    // 若所有关键字都没匹配上，那当前字符就是一个变量
+    std::string varName(1, current_char);
+    tokens.push_back(Token(TokenType::VAR, varName));
+    advance();
 }
 
-// ==========================================
-// 3. 主分析循环 (核心逻辑)
-// ==========================================
-
-std::vector<Token> Lexer::tokenize() {
+std::vector<Token> Lexer::tokenize()
+{
     std::vector<Token> tokens;
 
-    while (current_char != '\0') {
-        // 情况 A: 空格 -> 跳过
-        if (std::isspace(current_char)) {
+    while (current_char != '\0')
+    {
+        // blank space
+        if (std::isspace(current_char))
+        {
             skip_whitespace();
             continue;
         }
 
-        // 情况 B: 数字 -> 调用 number()
-        if (std::isdigit(current_char)) {
+        // number
+        if (std::isdigit(current_char))
+        {
             tokens.push_back(number());
             continue;
         }
 
-        // 情况 C: 字母 -> 调用 identifier()
-        if (std::isalpha(current_char)) {
-            tokens.push_back(identifier());
+        // character
+        if (std::isalpha(current_char))
+        {
+            identifier(tokens);
             continue;
         }
 
-        // 情况 D: 符号 -> 使用 switch 逐个判断
-        switch (current_char) {
-            case '+': tokens.push_back({TokenType::PLUS, "+"}); break;
-            case '-': tokens.push_back({TokenType::MINUS, "-"}); break;
-            case '*': tokens.push_back({TokenType::MUL, "*"}); break;
-            case '/': tokens.push_back({TokenType::DIV, "/"}); break;
-            case '^': tokens.push_back({TokenType::POW, "^"}); break;
-            case '(': tokens.push_back({TokenType::LPAREN, "("}); break;
-            case ')': tokens.push_back({TokenType::RPAREN, ")"}); break;
-            default:
-                // 遇到无法识别的字符，抛出异常
-                throw std::runtime_error(std::string("Unknown character: ") + current_char);
+        // operators
+        switch (current_char)
+        {
+        case '+':
+            tokens.push_back({TokenType::PLUS, "+"});
+            break;
+        case '-':
+            tokens.push_back({TokenType::MINUS, "-"});
+            break;
+        case '*':
+            tokens.push_back({TokenType::MUL, "*"});
+            break;
+        case '/':
+            tokens.push_back({TokenType::DIV, "/"});
+            break;
+        case '^':
+            tokens.push_back({TokenType::POW, "^"});
+            break;
+        case '(':
+            tokens.push_back({TokenType::LPAREN, "("});
+            break;
+        case ')':
+            tokens.push_back({TokenType::RPAREN, ")"});
+            break;
+        default:
+            // throw error
+            throw std::runtime_error(std::string("Unknown character: ") + current_char);
         }
-        
-        // 处理完符号后，指针前移
+
         advance();
     }
 
     tokens.push_back({TokenType::END_OF_FILE, ""});
-    
-    // 最后一步：处理隐式乘法
+
+    // handle implicit mult
     return handle_implicit_multiplication(tokens);
 }
 
-std::vector<Token> Lexer::handle_implicit_multiplication(const std::vector<Token>& tokens) {
-    return tokens; // 暂时不处理隐式乘法，直接返回原始tokens
+std::vector<Token> Lexer::handle_implicit_multiplication(const std::vector<Token> &input_tokens)
+{
+    std::vector<Token> result;
+    if (input_tokens.empty())
+        return result;
+
+    result.push_back(input_tokens[0]);
+
+    for (size_t i = 1; i < input_tokens.size(); ++i)
+    {
+        Token prev = input_tokens[i - 1];
+        Token curr = input_tokens[i];
+
+        bool needs_mult = false;
+
+        // 判断前一个 Token 是否是可能触发隐式乘法的“左值”
+        bool is_prev_valid = (prev.type == TokenType::INT ||
+                              prev.type == TokenType::VAR ||
+                              prev.type == TokenType::RPAREN);
+
+        // 判断当前 Token 是否是可能触发隐式乘法的“右值”
+        bool is_curr_valid = (curr.type == TokenType::VAR ||
+                              curr.type == TokenType::INT ||
+                              curr.type == TokenType::LPAREN ||
+                              curr.type == TokenType::SIN ||
+                              curr.type == TokenType::COS ||
+                              curr.type == TokenType::TAN ||
+                              curr.type == TokenType::COT ||
+                              curr.type == TokenType::LN ||
+                              curr.type == TokenType::SQRT);
+
+        if (is_prev_valid && is_curr_valid)
+        {
+            result.push_back({TokenType::MUL, "*"});
+        }
+
+        result.push_back(curr);
+    }
+    return result;
 }
