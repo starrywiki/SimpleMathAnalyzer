@@ -68,8 +68,15 @@ std::shared_ptr<ASTNode> Parser::parse_term() {
 // Factor: Primary (^ Factor)? 
 // 注意：幂运算通常是右结合的，例如 2^3^4 = 2^(3^4)
 std::shared_ptr<ASTNode> Parser::parse_factor() {
-    auto left = parse_primary();
+    if (current_token.type == TokenType::MINUS) {
+        TokenType op = current_token.type;
+        advance();
+    
+        auto right = parse_factor(); 
 
+        return std::make_shared<UnaryOpNode>(op, std::move(right));
+    }
+    auto left = parse_primary();
     if (current_token.type == TokenType::POW) {
         TokenType op = current_token.type;
         advance();

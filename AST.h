@@ -45,6 +45,29 @@ public:
     }
 };
 
+// 一元运算符
+class UnaryOpNode : public ASTNode
+{
+public:
+    TokenType op;
+    std::shared_ptr<ASTNode> left;
+
+    UnaryOpNode(TokenType op, std::shared_ptr<ASTNode> operand)
+        : op(op), left(std::move(operand)) {}
+
+    void print(int indent) const override
+    {
+        std::string opStr;
+        switch (op){
+        case TokenType::MINUS:
+            opStr = "-";
+            break;
+        }
+        std::cout << std::string(indent * 2, ' ') << "UnaryOp: " << opStr << std::endl;
+        left->print(indent + 1);
+    }
+};
+
 // 二元运算符
 class BinaryOpNode : public ASTNode
 {

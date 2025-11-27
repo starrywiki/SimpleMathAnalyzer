@@ -35,7 +35,7 @@ enum class TokenType
     COT,   // cot
     SQRT,  // sqrt
 
-    // 标点符号 (syntax.h 里没有的)
+    // 标点符号
     LPAREN, // (
     RPAREN, // )
 
