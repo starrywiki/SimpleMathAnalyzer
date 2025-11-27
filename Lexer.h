@@ -15,25 +15,25 @@
 #include <vector>
 #include <iostream>
 
-// 这里定义的是“词法单元类型”，不是“语法树节点类型”
+// 定义“词法单元类型”
 enum class TokenType
 {
     // 数据类
-    INT, // 整数 "123"
-    VAR, // 变量 "x"
+    INT, // 整数 
+    VAR, // 变量 
 
-    // 运算符类 (对应 syntax.h 中的 Binop/Unop，但这里只是符号)
+    // 运算符类 
     PLUS,  // +
     MINUS, // -
     MUL,   // *
     DIV,   // /
     POW,   // ^
     LN,    // ln
-    SIN,
-    COS,
-    TAN,
-    COT,
-    SQRT,
+    SIN,   // sin
+    COS,   // cos
+    TAN,   // tan
+    COT,   // cot
+    SQRT,  // sqrt
 
     // 标点符号 (syntax.h 里没有的)
     LPAREN, // (
@@ -47,8 +47,8 @@ struct Token
 {
     TokenType type;
     std::string value; // 存储具体的字符
-    Token(TokenType t, std::string v) : type(t), value(v) {} 
-    Token() {} 
+    Token(TokenType t, std::string v) : type(t), value(v) {}
+    Token() {}
     // 方便调试打印
     std::string toString() const
     {

@@ -1,7 +1,7 @@
 # SimpleMathAnalyzer
 Lexical analysis, syntax analysis, and simple equality judgment of simple mathematical expressions
 ## How to Contibute
-### clone
+### Clone
 ```bash
 git clone git@github.com:starrywiki/SimpleMathAnalyzer.git
 cd SimpleMathAnalyzer
@@ -12,7 +12,7 @@ ssh -T git@github.com
 # Expected output: Hi [Your Username]! You've successfully authenticated...
 # 我用的ssh协议，可自由选择
 ```
-### workflow 
+### Workflow 
 Do NOT work directly on the main branch. This branch is reserved for stable, tested code.
 1. Update main: Before starting any new work, make sure your local main branch is up-to-date:
 ```bash
@@ -61,7 +61,18 @@ git push -u origin feature/your-task-name
 **目标**: 将输入的字符序列分解为有意义的**词法单元 (Tokens)**。
 
 * **输入**: 原始数学表达式字符串（如 `(3+x)*sin(2)`）。
-* **输出**: Token 序列。
+* **输出**: Token 序列 
+  - (如上例的token序列：LPAREN 
+INT(3) 
+PLUS 
+VAR(x) 
+RPAREN 
+MUL 
+SIN 
+LPAREN 
+INT(2) 
+RPAREN 
+EOF)
 * **Token 类型定义**:
     * **整数常数 (INT)**: e.g., `3`, `100`
     * **变量 (VAR)**: 单个字母, e.g., `x`, `y`
@@ -74,8 +85,11 @@ git push -u origin feature/your-task-name
 
 **目标**: 检查 Token 序列是否符合语法规则，并生成**抽象语法树 (AST)**。
 
-* **输入**: Token 序列。
+* **输入**: Token 序列。（如(3+x)*sin(2)）
 * **输出**: 抽象语法树 (AST) 或**语法错误**。
+  * 上例的AST如图所示：
+
+    <img src="image.png" alt="描述文字" width="50%" />
 * **核心功能**:
     * **验证结构**: 检查括号匹配、操作符数量及位置等是否正确。
     * **AST 生成**: 根据运算符的优先级和结合性构建语法树。例如，对 $A+B*C$ 生成的树应体现乘法优先于加法。
