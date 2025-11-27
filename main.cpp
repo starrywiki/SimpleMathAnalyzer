@@ -8,22 +8,47 @@
  * two-expression comparison (parsing, equality checking).
  */
 #include "Lexer.h"
+#include "Parser.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
 using namespace std;
 
-int main(){
+int main()
+{
     string expr;
-    cout << "Enter a mathematical expression: "<< endl;
-    getline(cin, expr);
-    Lexer lexer(expr);
-    vector<Token> tokens = lexer.tokenize();
+    cout << "Enter a mathematical expression: " << endl;
 
-    cout << "Tokens: " << endl;
-    for (const auto& token : tokens) {
-        cout << token.toString() << " " << endl;
+    if (!getline(cin, expr) || expr.empty())
+    {
+        return 0;
+    }
+
+    try
+    {
+        Lexer lexer(expr);
+        vector<Token> tokens = lexer.tokenize();
+        // Lexical Analysis
+        cout << "--- Tokens --- " << endl;
+        for (const auto &token : tokens)
+        {
+            cout << token.toString() << " ";
+            cout << endl;
+        }
+        // Syntax Analysis(Parsing)
+        Parser parser(tokens);
+        std::shared_ptr<ASTNode> ast = parser.parse();
+
+        cout << "--- Abstract Syntax Tree (AST) ---" << endl;
+        if (ast)
+        {
+            ast->print(0);
+        }
+    }
+    catch (const std::exception &e)
+    {
+        cerr << "Error: " << e.what() << endl;
     }
 
     return 0;
