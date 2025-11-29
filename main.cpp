@@ -10,6 +10,7 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "exam.h"
+#include "EqualityChecker.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -36,6 +37,11 @@ void test(const string& expr){
         if (ast)
         {
             ast->print(0);
+            
+            //打印标准化后的结果
+            cout << "--- Standardized Form (SOP) ---" << endl;
+            string stdStr = EqualityChecker::getStandardizedString(ast);
+            cout << stdStr << endl;
         }
     }
     catch (const std::exception &e)
@@ -73,7 +79,7 @@ int main()
     string expr2;
     cout << "Enter a mathematical expression: " << endl;
 
-    if (!getline(cin, expr2) || expr.empty())
+    if (!getline(cin, expr2) || expr2.empty())
     {
         test(expr2);
         // return 0;
