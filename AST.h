@@ -50,10 +50,10 @@ class UnaryOpNode : public ASTNode
 {
 public:
     TokenType op;
-    std::shared_ptr<ASTNode> left;
+    std::shared_ptr<ASTNode> right;
 
     UnaryOpNode(TokenType op, std::shared_ptr<ASTNode> operand)
-        : op(op), left(std::move(operand)) {}
+        : op(op), right(std::move(operand)) {}
 
     void print(int indent) const override
     {
@@ -64,7 +64,7 @@ public:
             break;
         }
         std::cout << std::string(indent * 2, ' ') << "UnaryOp: " << opStr << std::endl;
-        left->print(indent + 1);
+        right->print(indent + 1);
     }
 };
 
