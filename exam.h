@@ -1,3 +1,6 @@
+#ifndef EXAM_H  
+#define EXAM_H
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -98,3 +101,5 @@ public:
         };
     }
 };
+
+#endif

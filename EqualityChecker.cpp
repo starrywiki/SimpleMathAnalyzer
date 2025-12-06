@@ -99,23 +99,19 @@ std::vector<Term> EqualityChecker::standardize(const std::shared_ptr<ASTNode>& n
 
     // 二元运算节点
     if (auto b = std::dynamic_pointer_cast<BinaryOpNode>(node)) {
-        // 递归
         auto leftPoly = standardize(b->left);
         auto rightPoly = standardize(b->right);
 
         if (b->op == TokenType::PLUS) {
-            // 加法：直接合并列表
             result = leftPoly;
             result.insert(result.end(), rightPoly.begin(), rightPoly.end());
         } 
         else if (b->op == TokenType::MINUS) {
-            // 减法：右边系数取反再合并
             for (auto& term : rightPoly) term.coeff *= -1;
             result = leftPoly;
             result.insert(result.end(), rightPoly.begin(), rightPoly.end());
         }
         else if (b->op == TokenType::MUL) {
-            // (a+b)*(c+d) = ac + ad + bc + bd
             for (const auto& l : leftPoly) {
                 for (const auto& r : rightPoly) {
                     Term newTerm;
@@ -126,30 +122,56 @@ std::vector<Term> EqualityChecker::standardize(const std::shared_ptr<ASTNode>& n
                     result.push_back(newTerm);
                 }
             }
-        }
-    
-        else if (b->op == TokenType::DIV || b->op == TokenType::POW) {
-            // 处理除法、幂运算等：分开处理两边
-            auto leftPoly = standardize(b->left);
-            auto rightPoly = standardize(b->right);
-            // 两边处理完了之后统一转化成唯一的字符串表示
-            std::string leftStr = polyToString(leftPoly);
-            std::string rightStr = polyToString(rightPoly);
-
-            //合成一个新term
-            std::string combinedStr;
-            if (b->op == TokenType::DIV) {
-                combinedStr = "(" + leftStr + ")/(" + rightStr + ")";
-            } else { // POW
-                combinedStr = "(" + leftStr + ")^(" + rightStr + ")";
+        }        
+        else if (b->op == TokenType::POW) {
+            // 检查指数是否为整数 2 或 3
+            bool expanded = false;
+            if (rightPoly.size() == 1 && rightPoly[0].vars.empty()) { 
+                int exp = rightPoly[0].coeff;
+                if (exp == 2 || exp == 3) {
+                    std::vector<Term> currentPoly = leftPoly; // Base^1
+                    
+                    for (int k = 1; k < exp; ++k) {
+                        std::vector<Term> nextPoly;
+                        for (const auto& t1 : currentPoly) {
+                            for (const auto& t2 : leftPoly) {
+                                Term newTerm;
+                                newTerm.coeff = t1.coeff * t2.coeff;
+                                newTerm.vars = t1.vars;
+                                newTerm.vars.insert(newTerm.vars.end(), t2.vars.begin(), t2.vars.end());
+                                // 变量排序以保证唯一性
+                                std::sort(newTerm.vars.begin(), newTerm.vars.end());
+                                nextPoly.push_back(newTerm);
+                            }
+                        }
+                        currentPoly = nextPoly;
+                    }
+                    result = currentPoly;
+                    expanded = true;
+                }
             }
 
-            Term t;
-            t.coeff = 1;
-            t.vars.push_back(combinedStr);
-            result.push_back(t);
+            // 如果无法展开回退到字符串拼接
+            if (!expanded) {
+                std::string leftStr = polyToString(leftPoly);
+                std::string rightStr = polyToString(rightPoly);
+                std::string combinedStr = "(" + leftStr + ")^(" + rightStr + ")";
+                Term t;
+                t.coeff = 1;
+                t.vars.push_back(combinedStr);
+                result.push_back(t);
+            }
         }
-        // 对整个多项式排序并合并同类项
+        else if (b->op == TokenType::DIV) {
+             std::string leftStr = polyToString(leftPoly);
+             std::string rightStr = polyToString(rightPoly);
+             std::string combinedStr = "(" + leftStr + ")/(" + rightStr + ")";
+             Term t;
+             t.coeff = 1;
+             t.vars.push_back(combinedStr);
+             result.push_back(t);
+        }
+
         sortAndMerge(result); 
         return result;
     }
@@ -173,8 +195,6 @@ std::vector<Term> EqualityChecker::standardize(const std::shared_ptr<ASTNode>& n
         result.push_back(t);
         return result;
     }
-    
-    // 处理异常请况
     else{
         throw std::runtime_error("Unsupported node type");
     }

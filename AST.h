@@ -62,6 +62,8 @@ public:
         case TokenType::MINUS:
             opStr = "-";
             break;
+        default:              
+            break;
         }
         std::cout << std::string(indent * 2, ' ') << "UnaryOp: " << opStr << std::endl;
         right->print(indent + 1);
