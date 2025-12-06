@@ -32,7 +32,14 @@ void Parser::eat(TokenType type) {
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {
-    return parse_expression();
+    auto node = parse_expression();
+    
+    // 检查是否有多余的 Token
+    if (current_token.type != TokenType::END_OF_FILE) {
+        throw std::runtime_error("Unexpected token at end of expression: " + current_token.toString());
+    }
+    
+    return node;
 }
 
 // Expression: Term ((PLUS | MINUS) Term)*
