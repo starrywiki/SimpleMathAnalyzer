@@ -1,0 +1,37 @@
+sinxln(xx), lnx^2sinx
+
+sin(x * 1), sin(x + 0)
+
+(x^2)^3, (xx)^3
+
+(1+sin(x^2))^3, (sin(xx) + 1)(sin(xx) + 1)^2
+
+yx^2x^2, x^3yx
+
+yx^(x+sinx^2), x^(sin(xx)+x)y
+
+yx^-sinx^2, x^(sin(xx)*-1)y
+
+cos(x-y) + 1, 1 + cos(-y+x)
+
+x^2y + x * yx, 2x^2y
+
+--sin(x), sin(x)
+
+y -(-x^2), x^2+y
+
+-(x -y + z), y - x - z
+
+1 + (-sin(x)), 1 - sin(x)
+
+(x+1) ^ 2, (1+x)^2
+
+(x * y) ^ (a + b), (y * x) ^ (b + a)
+
+x^(1 + 2), x ^ 3
+
+3 * x^2 * sin(y), sin(y) * 3 * x^2
+
+ln(x) * y * 5, 5y * ln(x)
+
+2x / y + 1, 1 + 2x / y
